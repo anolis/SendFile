@@ -5,8 +5,10 @@
 
 package sendfile;
 
-import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -36,10 +38,29 @@ public class DownloadFile {
             Logger.getLogger(DownloadFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    private void RecieveFile(){
-        out.
-        File s;
-        
+    public void RecieveName(){
+        BufferedReader fileNameReader = null;
+        try {
+            String filename;
+            fileNameReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            out.print("send");
+            this.RecieveFile((String)fileNameReader.readLine());
+        } catch (IOException ex) {
+            Logger.getLogger(DownloadFile.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fileNameReader.close();
+            } catch (IOException ex) {
+                Logger.getLogger(DownloadFile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
-
+    public void RecieveFile(String filename){
+        
+        try {
+            FileOutputStream s = new FileOutputStream(filename);
+        } catch (IOException ex) {
+            Logger.getLogger(DownloadFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
