@@ -10,8 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,16 +24,23 @@ public class DownloadFile {
     
     Socket connection;
     ObjectInputStream in;
-    PrintWriter out;
+    DatagramPacket out;
+    InetAddress ADDRESS;
+    int PORT;
+    
     public DownloadFile(Socket connection){
         this.connection = connection;
-        
+        this.ADDRESS = connection.getInetAddress();
+        this.PORT = connection.getPort();
     }
     
     private void SetupInput(){
         try {
+            byte[] buf = new byte[256];
+            buf = "mode1".getBytes();
             in = new ObjectInputStream(connection.getInputStream());
-            out = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()));
+            out = new DatagramPacket(buf,buf.length,ADDRESS,PORT);
+            
         } catch (IOException ex) {
             Logger.getLogger(DownloadFile.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -43,7 +50,6 @@ public class DownloadFile {
         try {
             String filename;
             fileNameReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            out.print("send");
             this.RecieveFile((String)fileNameReader.readLine());
         } catch (IOException ex) {
             Logger.getLogger(DownloadFile.class.getName()).log(Level.SEVERE, null, ex);
